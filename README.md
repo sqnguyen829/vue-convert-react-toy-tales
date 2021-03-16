@@ -1,13 +1,16 @@
 # Toy Tales
-
+This project was converted from react to vue for problem solving.
 You've got a friend in need! Again!
 Andy has misplaced of his toys (again) and need your help to organize them.
 
 All the information about Andy's toys can be found in the 'db.json' file, which you will need to fire up, using the following command in your terminal:
+
 npm install -g json-server
+
 `json-server --watch db.json`
 
 Turning on Vue server
+
 npm run serve
 
 Before you start building out the application, the first step that you should take is to draw out your app hierarchy. This will tell you how components can speak to each other as well as where that information should be stored.
