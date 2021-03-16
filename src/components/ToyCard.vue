@@ -1,10 +1,20 @@
 <template>
     <div class="card">
-        <h2>{{'Toys Name'}}</h2>
-        <img src='{toy image}' alt='{toy name}' class="toy-avatar" />
-        <p>{{'likecount'}} Likes </p>
-        // eslint-disable-next-line vue/no-parsing-error
-        <button class="like-btn">Like {<3}</button>
-        <button class="del-btn">Donate to GoodWill</button>
+        <h2>{{toy.name}}</h2>
+        <img v-bind:src="toy.image" @error="$event.target.src='https://images-na.ssl-images-amazon.com/images/I/41mhEuepeaL._AC_.jpg'" class="toy-avatar" />
+        <p>{{toy.likes}} Likes </p>
+        <button @click="$emit('like-toy', toy)" class="like-btn">Like ♥</button>
+        <button @click="$emit('donate-toy', toy.id)" class="del-btn" >Donate to GoodWill</button>
       </div>
 </template>
+
+<script>
+export default {
+    name:"ToyCard",
+    props:["toy"]
+}
+</script>
+
+<style scoped>
+
+</style>

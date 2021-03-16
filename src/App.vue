@@ -2,12 +2,12 @@
   <div>
     <Header/>
     <div v-if="display">
-      <ToyForm/>
+      <ToyForm v-on:add-toy="addToy"/>
     </div>
     <div class="buttonContainer">
       <button @click="handleClick">Add a Toy</button>
     </div>
-    <ToyContainer/>
+    <ToyContainer v-bind:toys="toys" v-on:donate-toy="donateToy" v-on:like-toy="likeToy"/>
   </div>
 </template>
 
@@ -24,15 +24,67 @@ export default {
     ToyContainer
   },
   data(){
-    //state
+    //data() technically acts like state from react
     return {
-      display:false
+      display: false,
+      toys: []
     }
   },
   methods: {
-    handleClick(){
+    handleClick() {
       this.display = !this.display 
+    },
+    addToy(newToy) {
+      fetch('http://localhost:3000/toys',{
+        method:'POST',
+        headers:{
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newToy)
+      })
+      .then(res => res.json())
+      .then(data => this.toys = [...this.toys, data])
+      .catch(err => console.log(err))
+    },
+    donateToy(id) {
+      fetch(`http://localhost:3000/toys/${id}`,{
+          method:'DELETE',
+          headers:{
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(()=> this.toys = this.toys.filter(toy => toy.id != id))
+      .catch(err => console.log(err))
+    },
+    likeToy(toy) {
+      fetch(`http://localhost:3000/toys/${toy.id}`,{
+      method:'PATCH',
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        likes: toy.likes + 1
+      })
+    })
+    .then(res=> res.json())
+    .then(data => this.toys = this.toys.map(t => {
+      if(t.id === toy.id){
+        t.likes = data.likes
+        return t
+      }else{
+        return t
+      }
+    }))
     }
+  },
+  created() {//created() acts as a componentDidMount
+    //included the method in the second arg of the fetch since it was throwing an error in the console. It didn't affect the fetch though
+    fetch('http://localhost:3000/toys',{
+      method:'GET'
+    })
+    .then(res => res.json())
+    .then(data => this.toys = data)
+    .catch(err => console.log(err))
   }
 }
 </script>
@@ -69,6 +121,9 @@ export default {
 }
 
 .card {
+  /* grid-column-start: 1;
+  grid-column-end: 3; */
+  text-align: center;
   text-align: center;
   border: grey solid 1px;
   padding: 1rem;
